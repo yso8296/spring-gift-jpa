@@ -14,6 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest
@@ -36,7 +39,8 @@ public class WishServiceTest {
         ProductResponse product = productService.register(productRequest);
 
         wishService.addWistList(user.id(), new WishRequest(product.id(), 3));
-        PageResponse<WishResponse> wishes = wishService.findAllWish(user.id(), 1, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        PageResponse<WishResponse> wishes = wishService.findAllWish(user.id(), pageable);
         WishResponse actual = wishes.responses().get(0);
 
         assertAll(
@@ -58,7 +62,8 @@ public class WishServiceTest {
         ProductResponse product = productService.register(productRequest);
         wishService.addWistList(user.id(), new WishRequest(product.id(), 3));
 
-        PageResponse<WishResponse> wishes = wishService.findAllWish(user.id(), 1, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        PageResponse<WishResponse> wishes = wishService.findAllWish(user.id(), pageable);
 
         assertThat(wishes).isNotNull();
     }
@@ -73,7 +78,8 @@ public class WishServiceTest {
         wishService.addWistList(user.id(), new WishRequest(product.id(), 3));
 
         wishService.deleteWishList(user.id(), product.id());
-        PageResponse<WishResponse> wishes = wishService.findAllWish(user.id(), 1, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        PageResponse<WishResponse> wishes = wishService.findAllWish(user.id(), pageable);
 
         assertThat(wishes.responses()).isEmpty();
     }

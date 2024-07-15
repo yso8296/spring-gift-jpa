@@ -8,6 +8,9 @@ import gift.model.wish.WishResponse;
 import gift.model.wish.WishUpdateRequest;
 import gift.service.WishService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +35,9 @@ public class WishListController {
     @GetMapping("")
     public ResponseEntity<PageResponse<WishResponse>> getAllWishList(
         @LoginUser LoginUserRequest user,
-        @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-        @RequestParam(value = "size", required = false, defaultValue = "10") int size
+        @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        PageResponse responses = wishService.findAllWish(user.id(), page, size);
+        PageResponse<WishResponse> responses = wishService.findAllWish(user.id(), pageable);
         return ResponseEntity.ok().body(responses);
     }
 

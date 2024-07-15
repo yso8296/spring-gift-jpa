@@ -17,6 +17,7 @@ import gift.repository.WishRepository;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +38,8 @@ public class WishService {
     }
 
 
-    public PageResponse<WishResponse> findAllWish(Long userId, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Wish> wishList = wishRepository.findByUserId(userId, pageRequest);
+    public PageResponse<WishResponse> findAllWish(Long userId, Pageable pageable) {
+        Page<Wish> wishList = wishRepository.findByUserId(userId, pageable);
 
         List<WishResponse> wishResponses = wishList.getContent().stream()
             .map(WishResponse::from)

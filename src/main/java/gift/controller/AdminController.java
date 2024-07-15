@@ -4,6 +4,9 @@ import gift.common.dto.PageResponse;
 import gift.model.product.ProductRequest;
 import gift.model.product.ProductResponse;
 import gift.service.ProductService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,11 +36,10 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
-    @GetMapping("/admin/products")
+    @GetMapping("/products")
     public String getAllProducts(Model model,
-        @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-        @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
-        PageResponse response = productService.findAllProduct(page, size);
+        @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        PageResponse<ProductResponse> response = productService.findAllProduct(pageable);
         model.addAttribute("products", response);
         return "productList";
     }

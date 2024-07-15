@@ -5,6 +5,9 @@ import gift.model.product.ProductRequest;
 import gift.model.product.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,11 +37,10 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<PageResponse> getAllProducts(
-        @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-        @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    public ResponseEntity<PageResponse<ProductResponse>> getAllProducts(
+        @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        PageResponse response = productService.findAllProduct(page, size);
+        PageResponse<ProductResponse> response = productService.findAllProduct(pageable);
         return ResponseEntity.ok().body(response);
     }
 

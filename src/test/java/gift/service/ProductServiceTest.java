@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -58,7 +59,8 @@ public class ProductServiceTest {
         productService.register(productRequest1);
         productService.register(productRequest2);
 
-        PageResponse<ProductResponse> products = productService.findAllProduct(1, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        PageResponse<ProductResponse> products = productService.findAllProduct(pageable);
 
         assertThat(products.size()).isEqualTo(2);
     }
@@ -89,7 +91,8 @@ public class ProductServiceTest {
         productService.register(productRequest2);
 
         productService.deleteProduct(1L);
-        PageResponse<ProductResponse> products = productService.findAllProduct(1, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        PageResponse<ProductResponse> products = productService.findAllProduct(pageable);
 
         assertThat(products.size()).isEqualTo(1);
     }
